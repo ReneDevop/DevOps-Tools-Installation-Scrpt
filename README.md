@@ -56,6 +56,8 @@ sudo ln -s /opt/tomcat9/bin/shutdown.sh /usr/bin/stoptomcat
 sudo yum update -y
 starttomcat
 
+
+
 NEXUS INSTALLATION
 #!/bin/bash
 # Install and start nexus as a service 
@@ -111,7 +113,9 @@ Unable to access nexus URL?
 -------------------------------------
 a)make sure port 8081 is opened in security groups in AWS ec2 instance.
                   
- JENKINS INSTALLATION SCRIPT
+ 
+                  
+JENKINS INSTALLATION SCRIPT
   Jenkins-install.sh  
 # CREATE HOSTNAME 
 sudo hostname auto  
@@ -132,3 +136,27 @@ sudo systemctl enable jenkins
 sudo systemctl start jenkins
 # You can check the status of the Jenkins service using the command:
 sudo systemctl status jenkins                
+
+    
+    DOCKER-JENKINS INSTALLATION IN UBUNTU SERVER              
+   /bin/bash
+# Run this as a script
+sudo hostname docker
+sudo apt install docker.io -y
+sudo usermod -aG docker ubuntu 
+# Install java as jenkins dependency
+sudo apt install openjdk-11-jdk -y
+# install jenkis in ubuntu:
+sudo wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > \
+    /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+sudo apt-get install jenkins -y 
+sudo systemctl start jenkins 
+
+echo "jenkins  ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/jenkins" 
+sudo echo "jenkins:admin" | chpasswd
+sudo sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
+sudo service sshd restart
+sudo usermod -aG  docker jenkins             
+                  
